@@ -2,9 +2,12 @@ require 'sinatra/base'
 require 'padrino-helpers'
 require 'data_mapper'
 require './lib/course'
-require 'pry'
 require './lib/user'
 require './lib/delivery'
+
+if ENV['RACK_ENV'] != 'production'
+  require 'pry'
+end
 
 class WorkshopApp < Sinatra::Base
   register Padrino::Helpers
@@ -12,7 +15,7 @@ class WorkshopApp < Sinatra::Base
   enable :sessions
   set :session_secret, '11223344556677' 
   
-    env = ENV['RACK_ENV'] || 'development'
+  env = ENV['RACK_ENV'] || 'development'
   DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://postgres:postgres@localhost/workshop_#{env}")
   DataMapper::Model.raise_on_save_failure = true
   DataMapper.finalize

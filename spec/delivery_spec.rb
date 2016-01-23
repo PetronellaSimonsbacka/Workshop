@@ -1,4 +1,4 @@
-Require '.lib/delivery'
+require './lib/delivery'
 
 describe Delivery do
   it { is_expected.to have_property :id }
