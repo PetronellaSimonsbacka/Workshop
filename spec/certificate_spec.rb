@@ -5,6 +5,9 @@ describe Certificate do
   it { is_expected.to belong_to :delivery }
   it { is_expected.to belong_to :student }
   
+  it { is_expected.to have_property :certificate_key }
+it { is_expected.to have_property :image_key }
+  
   describe 'Creating a Certificate' do
   before do
     course = Course.create(title: 'Learn To Code 101', description: 'Introduction to programming')
