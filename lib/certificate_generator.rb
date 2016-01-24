@@ -6,7 +6,7 @@ if ENV['RACK_ENV'] != 'production'
 end
 
 module CertificateGenerator
-    module CertificateGenerator
+
   if ENV['RACK_ENV'] != 'production'
     Dotenv.load
   end
