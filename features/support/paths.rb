@@ -21,6 +21,14 @@ module NavigationHelpers
   '/users/login'
   when /Create course page/
   '/courses/create'
+  
+  when /^(.*) show page$/i
+    d = Delivery.find(date: $1).first
+    "/courses/deliveries/show/#{d.id}"
+    
+  when /the valid certificate page/
+    c = Certificate.last
+    "/verify/#{c.identifier}"
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
@@ -31,8 +39,11 @@ module NavigationHelpers
     else
       raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
         "Now, go and add a mapping in #{__FILE__}"
+      
     end
   end
 end
+
+
 
 World(NavigationHelpers)

@@ -7,6 +7,10 @@ gem 'data_mapper'
 gem 'dm-postgres-adapter'
 gem 'pg'
 gem 'bcrypt-ruby'
+gem 'prawn'
+gem 'rmagick'
+gem 'aws-sdk'
+gem 'dotenv'
 
 group :development, :test do
     gem 'cucumber'

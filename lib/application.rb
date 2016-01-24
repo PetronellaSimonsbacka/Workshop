@@ -4,12 +4,18 @@ require 'data_mapper'
 require './lib/course'
 require './lib/user'
 require './lib/delivery'
+require './lib/student'
+require './lib/csv_parse'
+require './lib/certificate'
 
 if ENV['RACK_ENV'] != 'production'
   require 'pry'
 end
+require 'dotenv'
 
 class WorkshopApp < Sinatra::Base
+  Dotenv.load
+  include CSVParse
   register Padrino::Helpers
   set :protect_from_csrf, true
   enable :sessions
@@ -110,9 +116,37 @@ class WorkshopApp < Sinatra::Base
     redirect '/'
   end
 
+get '/courses/deliveries/show/:id', auth: :user do
+  @delivery = Delivery.get(params[:id].to_i)
+  erb :'courses/deliveries/show'
+end
 
+post '/courses/deliveries/file_upload' do
+  @delivery = Delivery.get(params[:id].to_i)
+  CSVParse.import(params[:file][:tempfile], Student, @delivery)
+  redirect "/courses/deliveries/show/#{@delivery.id}"
+end
+
+get '/courses/generate/:id' do
+    @delivery = Delivery.get(params[:id].to_i)
+    @delivery.students.each do |student|
+    c = student.certificates.new(created_at: DateTime.now, delivery: @delivery)
+    c.save
+  end
+  redirect "/courses/deliveries/show/#{@delivery.id}"
+end
+
+  get '/verify/:hash' do
+    @certificate = Certificate.first(identifier: params[:hash])
+    if @certificate
+      @image = "/img/usr/#{env}/" + [@certificate.student.full_name, @certificate.delivery.start_date].join('_').downcase.gsub!(/\s/, '_') + '.jpg'
+      erb :'verify/valid'
+    else
+      erb :'verify/invalid'
+    end
+  end
 
   # start the server if ruby file executed directly
   run! if app_file == $0
-  
+
 end
