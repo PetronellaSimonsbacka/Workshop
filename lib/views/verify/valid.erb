@@ -4,3 +4,13 @@
 <p><%= @certificate.delivery.start_date %></p>
 
 <img src="<%= @certificate.image_url %>" />
+
+<% if @certificate.stats != 0 %>
+  <div>
+    Viewed <%= @certificate.stats %> <%= @certificate.stats == 1 ? 'time' : 'times' %>
+  </div>
+
+<% end %>
+<div>
+  <img src="<%= @certificate.image_url %>"/>
+</div>
