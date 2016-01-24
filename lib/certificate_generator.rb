@@ -1,9 +1,15 @@
 require 'prawn'
 require 'rmagick'
 require 'aws-sdk'
-require 'dotenv'
+if ENV['RACK_ENV'] != 'production'
+  require 'dotenv'
+end
 
- Dotenv.load!
+module CertificateGenerator
+    module CertificateGenerator
+  if ENV['RACK_ENV'] != 'production'
+    Dotenv.load
+  end
   CURRENT_ENV = ENV['RACK_ENV'] || 'development'
   PATH = "pdf/#{CURRENT_ENV}/"
   TEMPLATE = File.absolute_path('./pdf/templates/certificate_tpl.jpg')
@@ -62,3 +68,13 @@ require 'dotenv'
     im = Magick::Image.read(certificate_output)
     im[0].write(output)
   end
+  
+  def self.upload_to_s3(certificate_output, image_output)
+    s3_certificate_object = S3.bucket(ENV['S3_BUCKET']).object(certificate_output)
+    s3_certificate_object.upload_file(certificate_output, acl: 'public-read')
+    s3_image_object = S3.bucket(ENV['S3_BUCKET']).object(image_output)
+    s3_image_object.upload_file(image_output, acl: 'public-read')
+  end
+
+end
+  

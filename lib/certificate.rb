@@ -32,9 +32,13 @@ before :destroy do
   image_key.delete
 end
 
-   after :create do
-    CertificateGenerator.generate(self)
-  end
+def image_url
+  "https://#{ENV['S3_BUCKET']}.s3.amazonaws.com/#{self.image_key}"
+end
+
+def certificate_url
+  "https://#{ENV['S3_BUCKET']}.s3.amazonaws.com/#{self.certificate_key}"
+end
 
 end
   
